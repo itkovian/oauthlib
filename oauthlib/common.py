@@ -310,7 +310,7 @@ class CaseInsensitiveDict(dict):
     proxy = {}
 
     def __init__(self, data):
-        self.proxy = dict((k.lower(), k) for k in data)
+        self.proxy = dict((k.lower(), k) for k in data if not isinstance(k, types.GeneratorType))
         for k in data:
             self[k] = data[k]
 
@@ -330,8 +330,11 @@ class CaseInsensitiveDict(dict):
         return self[k] if k in self else default
 
     def __setitem__(self, k, v):
-        super(CaseInsensitiveDict, self).__setitem__(k, v)
-        self.proxy[k.lower()] = k
+        if isinstance(k, types.GeneratorType):
+            log.warning("Skipping key %s, since it is a generator, not a scalar type" % (k))
+        else:
+            super(CaseInsensitiveDict, self).__setitem__(k, v)
+            self.proxy[k.lower()] = k
 
 
 class Request(object):
