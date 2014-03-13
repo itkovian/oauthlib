@@ -15,6 +15,7 @@ import random
 import re
 import sys
 import time
+import types
 try:
     from urllib import quote as _quote
     from urllib import unquote as _unquote
